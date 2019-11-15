@@ -9,6 +9,8 @@ using std::cout;
 using std::endl;
 using std::vector;
 
+const double epsilon = 0.00000001;
+
 /**
  * Constructor.
  */
@@ -55,27 +57,51 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * TODO: Create the covariance matrix.
      * You'll need to convert radar from polar to cartesian coordinates.
      */
+	 std::cout << measurement_pack.raw_measurements_ << std::endl;
 
     // first measurement
-    cout << "EKF: " << endl;
+    //cout << "Kalman Filter Initialization " << endl;
+
+    // set the state with the initial location and zero velocity
+
+
+    previous_timestamp_ = measurement_pack.timestamp_;
+    //is_initialized_ = true;
+    //return;
+	
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
-
+	std::cout << "dsfaaaa" << std::endl;
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      // TODO: Convert radar from polar to cartesian coordinates 
-      //         and initialize state.
-
+		std::cout << "dsfaaaa" << std::endl;
+		double rho = measurement_pack.raw_measurements_[0]; // distance
+		double theta = measurement_pack.raw_measurements_[1]; // bearing
+		double rho_dot = measurement_pack.raw_measurements_[2]; // velocity
+		std::cout << "dsfaaaa" << std::endl;
+		double x = rho * cos(theta);
+		double y = rho * sin(theta);
+		double v_x = rho_dot * cos(theta);
+		double v_y = rho_dot * sin(theta);
+		ekf_.x_ << x, 
+              y, 
+              v_x, 
+              v_y;
+		
+		
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-      // TODO: Initialize state.
-
+		std::cout << "dsfaaaa2" << std::endl;
+		ekf_.x_ << measurement_pack.raw_measurements_[0], 
+              measurement_pack.raw_measurements_[1], 
+              0, 
+              0;
     }
-
+	std::cout << "dfsy" << std::endl;
     // done initializing, no need to predict or update
     is_initialized_ = true;
     return;
   }
-
+  std::cout << "dfs" << std::endl;
   /**
    * Prediction
    */

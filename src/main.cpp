@@ -30,6 +30,7 @@ string hasData(string s) {
 }
 
 int main() {
+  std::cout << "hier" << std::endl;
   uWS::Hub h;
 
   // Create a Kalman Filter instance
@@ -119,7 +120,7 @@ int main() {
           double p_y = fusionEKF.ekf_.x_(1);
           double v1  = fusionEKF.ekf_.x_(2);
           double v2 = fusionEKF.ekf_.x_(3);
-
+		
           estimate(0) = p_x;
           estimate(1) = p_y;
           estimate(2) = v1;
