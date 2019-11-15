@@ -30,7 +30,6 @@ string hasData(string s) {
 }
 
 int main() {
-  std::cout << "hier" << std::endl;
   uWS::Hub h;
 
   // Create a Kalman Filter instance
@@ -109,7 +108,8 @@ int main() {
           ground_truth.push_back(gt_values);
           
           // Call ProcessMeasurement(meas_package) for Kalman filter
-          fusionEKF.ProcessMeasurement(meas_package);       
+          fusionEKF.ProcessMeasurement(meas_package);
+		  std::cout << "hier234" << std::endl;
 
           // Push the current estimated x,y positon from the Kalman filter's 
           //   state vector
@@ -120,27 +120,32 @@ int main() {
           double p_y = fusionEKF.ekf_.x_(1);
           double v1  = fusionEKF.ekf_.x_(2);
           double v2 = fusionEKF.ekf_.x_(3);
-		
+		  std::cout << "hier2345" << std::endl;
           estimate(0) = p_x;
           estimate(1) = p_y;
           estimate(2) = v1;
           estimate(3) = v2;
-        
+        std::cout << "hier23456" << std::endl;
           estimations.push_back(estimate);
-
+std::cout << "hier234567" << std::endl;
           VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
-
+		  std::cout << RMSE << std::endl;
+std::cout << "hier234568" << std::endl;
           json msgJson;
           msgJson["estimate_x"] = p_x;
+		  std::cout << "hier234568" << std::endl;
           msgJson["estimate_y"] = p_y;
           msgJson["rmse_x"] =  RMSE(0);
+		  std::cout << "hier234568" << std::endl;
           msgJson["rmse_y"] =  RMSE(1);
           msgJson["rmse_vx"] = RMSE(2);
+		  std::cout << "hier234568" << std::endl;
           msgJson["rmse_vy"] = RMSE(3);
+		  std::cout << "hier23456789" << std::endl;
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
           // std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-
+std::cout << "hier234567891" << std::endl;
         }  // end "telemetry" if
 
       } else {
