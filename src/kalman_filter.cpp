@@ -3,7 +3,6 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-const double epsilon = 0.0001;
 
 #include <iostream>
 
@@ -60,21 +59,16 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
    */
   VectorXd h_x(3);
   h_x(0) = sqrt(x_(0) * x_(0) + x_(1) * x_(1)); // rho
-
-
   h_x(1) = atan2(x_(1), x_(0)); // phi
-  
-  if(h_x(0) < epsilon)
-  {
-	  h_x(2) = 0; // rho_dot
-  }
-  else
-  {
-	  h_x(2) = (x_(0)*x_(2) + x_(1)*x_(3))/ h_x(0); // rho_dot
-  }
-  
-  std::cout << "h: " << h_x << std::endl;
+  h_x(2) = (x_(0)*x_(2) + x_(1)*x_(3))/ h_x(0); // rho_dot
+
   VectorXd y = z - h_x;
+
+  while(fabs(y(1)) > M_PI)
+  {
+      y(1) < 0 ? y(1) += 2*M_PI : y(1) -= 2*M_PI;
+  }
+
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
@@ -82,10 +76,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   MatrixXd K = PHt * Si;
 
   //new estimate
-  std::cout << "x: " << x_(1) << std::endl;
-  std::cout << y << std::endl;
   x_ = x_ + (K * y);
-  std::cout << x_(1) << std::endl;
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
