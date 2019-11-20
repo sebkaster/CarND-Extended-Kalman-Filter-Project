@@ -3,7 +3,7 @@
 In this project a kalman filter is utilized to estimate the state of a moving object of interest with noisy lidar and radar measurements.
 
 
-![Example Image](Docs/project_img.png)
+![Example Image](./Docs/project_img.PNG)
 
 
 **INPUT**: values provided by the simulator to the c++ program
